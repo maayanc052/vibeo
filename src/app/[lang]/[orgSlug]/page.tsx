@@ -2,27 +2,35 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Info } from "lucide-react";
 import { hasLocale, localizedPath } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { demoOrganizations, getDemoEvents, getDemoOrganization } from "@/lib/demo-orgs";
+import {
+  getActiveEvents,
+  getOrganizationBySlug,
+  listOrganizationSlugs,
+  toEventView,
+  toOrganizationView,
+} from "@/lib/data/organizations";
 import { VibeoLogo } from "@/components/brand/VibeoLogo";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { OrgLogo } from "@/components/tenant/OrgLogo";
 import { EventCard } from "@/components/tenant/EventCard";
 
-// סביבות הדמו נבנות מראש; סלאגים אחרים ייבדקו בזמן הבקשה
-export function generateStaticParams() {
-  return demoOrganizations.map((o) => ({ orgSlug: o.slug }));
+// כל הארגונים הקיימים נבנים מראש; ארגון חדש ייבנה בבקשה הראשונה אליו
+export async function generateStaticParams() {
+  const slugs = await listOrganizationSlugs();
+  return slugs.map((orgSlug) => ({ orgSlug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/[orgSlug]">): Promise<Metadata> {
   const { lang, orgSlug } = await params;
-  const org = getDemoOrganization(orgSlug);
-  if (!hasLocale(lang) || !org) return {};
+  if (!hasLocale(lang)) return {};
+  const row = await getOrganizationBySlug(orgSlug);
+  if (!row) return {};
+  const org = toOrganizationView(row, lang);
   return {
-    title: `${org.name[lang]} · Vibeo`,
-    description: org.tagline[lang],
+    title: `${org.name} · Vibeo`,
+    description: org.tagline ?? undefined,
   };
 }
 
@@ -30,17 +38,17 @@ export default async function OrgPage({ params }: PageProps<"/[lang]/[orgSlug]">
   const { lang, orgSlug } = await params;
   if (!hasLocale(lang)) notFound();
 
-  const org = getDemoOrganization(orgSlug);
-  if (!org) notFound();
+  const row = await getOrganizationBySlug(orgSlug);
+  if (!row) notFound();
 
-  const t = await getDictionary(lang);
-  const events = getDemoEvents(org.id);
-  const orgName = org.name[lang];
+  const [t, eventRows] = await Promise.all([getDictionary(lang), getActiveEvents(row.id)]);
+  const org = toOrganizationView(row, lang);
+  const events = eventRows.map((e) => toEventView(e, lang));
 
   // צבעי המותג של הארגון זמינים לכל הרכיבים דרך משתני CSS
   const brandStyle = {
-    "--brand": org.brand_colors.primary,
-    "--brand-2": org.brand_colors.secondary,
+    "--brand": org.brandColors.primary,
+    "--brand-2": org.brandColors.secondary,
   } as CSSProperties;
 
   return (
@@ -57,23 +65,18 @@ export default async function OrgPage({ params }: PageProps<"/[lang]/[orgSlug]">
 
       <header className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5">
         <div className="flex items-center gap-3">
-          <OrgLogo name={orgName} logoUrl={org.logo_url} colors={org.brand_colors} size={44} />
-          <span className="text-lg font-bold">{orgName}</span>
+          <OrgLogo name={org.name} logoUrl={org.logoUrl} colors={org.brandColors} size={44} />
+          <span className="text-lg font-bold">{org.name}</span>
         </div>
         <LanguageSwitcher lang={lang} label={t.common.languageSwitch} />
       </header>
 
       <main className="mx-auto max-w-6xl px-4 pb-20">
         <section className="py-14 sm:py-20">
-          <OrgLogo name={orgName} logoUrl={org.logo_url} colors={org.brand_colors} size={72} />
-          <h1 className="mt-6 text-4xl font-black tracking-tight sm:text-6xl">{orgName}</h1>
-          <p className="mt-3 text-lg text-muted sm:text-xl">{org.tagline[lang]}</p>
+          <OrgLogo name={org.name} logoUrl={org.logoUrl} colors={org.brandColors} size={72} />
+          <h1 className="mt-6 text-4xl font-black tracking-tight sm:text-6xl">{org.name}</h1>
+          {org.tagline && <p className="mt-3 text-lg text-muted sm:text-xl">{org.tagline}</p>}
         </section>
-
-        <p className="mb-8 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-muted">
-          <Info className="size-3.5" />
-          {t.tenant.demoNotice}
-        </p>
 
         <section aria-labelledby="upcoming-title">
           <div className="mb-6">
@@ -99,9 +102,7 @@ export default async function OrgPage({ params }: PageProps<"/[lang]/[orgSlug]">
 
       <footer className="border-t border-white/10">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-6 text-sm text-muted">
-          <span>
-            © 2026 {orgName}
-          </span>
+          <span>© 2026 {org.name}</span>
           <Link href={localizedPath(lang, "/")} className="inline-flex items-center gap-2 hover:text-white">
             {t.common.poweredBy}
             <VibeoLogo size={22} />

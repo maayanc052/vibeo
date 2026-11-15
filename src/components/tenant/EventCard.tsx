@@ -12,7 +12,7 @@ import {
 import { ForwardArrow } from "@/components/i18n/ForwardArrow";
 import { localeTag, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/he";
-import type { DemoEvent, EventCategory } from "@/lib/demo-orgs";
+import type { EventCategory, EventView } from "@/lib/data/organizations";
 
 const categoryIcon: Record<EventCategory, LucideIcon> = {
   team: Users,
@@ -24,18 +24,18 @@ const categoryIcon: Record<EventCategory, LucideIcon> = {
 };
 
 type Props = {
-  event: DemoEvent;
+  event: EventView;
   lang: Locale;
   t: Dictionary;
 };
 
 export function EventCard({ event, lang, t }: Props) {
   const Icon = categoryIcon[event.category];
-  const seatsLeft = Math.max(event.max_capacity - event.registered_count, 0);
-  const fill = Math.min(100, Math.round((event.registered_count / event.max_capacity) * 100));
+  const seatsLeft = Math.max(event.maxCapacity - event.seatsTaken, 0);
+  const fill = Math.min(100, Math.round((event.seatsTaken / event.maxCapacity) * 100));
   const soldOut = seatsLeft === 0;
 
-  const date = new Date(event.event_date);
+  const date = new Date(event.eventDate);
   const dateLabel = new Intl.DateTimeFormat(localeTag[lang], {
     weekday: "short",
     day: "numeric",
@@ -55,8 +55,8 @@ export function EventCard({ event, lang, t }: Props) {
       <div
         className="relative h-36 overflow-hidden"
         style={{
-          background: event.cover_image_url
-            ? `center / cover no-repeat url(${event.cover_image_url})`
+          background: event.coverImageUrl
+            ? `center / cover no-repeat url(${event.coverImageUrl})`
             : "radial-gradient(120% 120% at 15% 10%, var(--brand) 0%, transparent 55%), radial-gradient(120% 120% at 90% 90%, var(--brand-2) 0%, transparent 55%), #120f1f",
         }}
       >
@@ -68,24 +68,26 @@ export function EventCard({ event, lang, t }: Props) {
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-lg font-bold leading-snug">{event.title[lang]}</h3>
-        <p className="mt-2 line-clamp-2 text-sm text-muted">{event.description[lang]}</p>
+        <h3 className="text-lg font-bold leading-snug">{event.title}</h3>
+        {event.description && <p className="mt-2 line-clamp-2 text-sm text-muted">{event.description}</p>}
 
         <ul className="mt-4 space-y-1.5 text-sm text-white/75">
           <li className="flex items-center gap-2">
             <CalendarDays className="size-4 text-[color:var(--brand-2)]" />
             {dateLabel} · <span dir="ltr">{timeLabel}</span>
           </li>
-          <li className="flex items-center gap-2">
-            <MapPin className="size-4 text-[color:var(--brand-2)]" />
-            {event.location[lang]}
-          </li>
+          {event.location && (
+            <li className="flex items-center gap-2">
+              <MapPin className="size-4 text-[color:var(--brand-2)]" />
+              {event.location}
+            </li>
+          )}
         </ul>
 
         {/* תפוסה */}
         <div className="mt-4">
           <div className="flex justify-between text-xs text-muted">
-            <span>{t.tenant.capacity(event.registered_count, event.max_capacity)}</span>
+            <span>{t.tenant.capacity(event.seatsTaken, event.maxCapacity)}</span>
             <span className={soldOut || seatsLeft <= 5 ? "text-pink-300" : ""}>
               {soldOut ? t.common.soldOut : t.common.seatsLeft(seatsLeft)}
             </span>

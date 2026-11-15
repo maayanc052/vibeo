@@ -111,7 +111,6 @@ export const he = {
     registrationSoon: "ההרשמה תיפתח בקרוב",
     capacity: (taken: number, max: number) => `${taken} מתוך ${max} נרשמו`,
     empty: "אין כרגע אירועים פתוחים. חזרו בקרוב!",
-    demoNotice: "סביבת הדגמה — הנתונים להמחשה בלבד",
     categories: {
       team: "יום גיבוש",
       workshops: "סדנה",

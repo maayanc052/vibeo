@@ -1,4 +1,4 @@
-import type { BrandColors } from "@/lib/demo-orgs";
+import type { BrandColors } from "@/lib/data/organizations";
 
 type Props = {
   name: string;

@@ -112,7 +112,6 @@ export const en: Dictionary = {
     registrationSoon: "Registration opens soon",
     capacity: (taken: number, max: number) => `${taken} of ${max} registered`,
     empty: "No open events right now. Check back soon!",
-    demoNotice: "Demo workspace — data is for illustration only",
     categories: {
       team: "Team day",
       workshops: "Workshop",
