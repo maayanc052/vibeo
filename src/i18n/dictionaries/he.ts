@@ -1,0 +1,130 @@
+// מילון עברית — מקור האמת למבנה המילון (המילון האנגלי חייב להתאים לו)
+
+export const he = {
+  meta: {
+    title: "Vibeo · וַיְבֶאוֹ — אירועים, גיבוש וקהילה",
+    description:
+      "פלטפורמה לניהול אירועים, ימי גיבוש וסדנאות לארגונים: הרשמה מאובטחת, אישורי הגעה בלחיצה ותזכורות אוטומטיות.",
+  },
+  common: {
+    languageSwitch: "Switch to English",
+    free: "חינם",
+    currency: "₪",
+    perPerson: "למשתתף",
+    seatsLeft: (n: number) => `נותרו ${n} מקומות`,
+    soldOut: "אזל",
+    poweredBy: "מופעל על ידי",
+    rights: "כל הזכויות שמורות",
+    backHome: "חזרה לעמוד הבית",
+  },
+  nav: {
+    home: "Vibeo — עמוד הבית",
+    links: [
+      { href: "#events", label: "אירועים" },
+      { href: "#team-building", label: "גיבוש צוות" },
+      { href: "#workshops", label: "סדנאות" },
+      { href: "#ideas", label: "רעיונות" },
+    ],
+    login: "כניסה",
+    cta: "התחילו עכשיו",
+    openMenu: "פתיחת תפריט",
+    closeMenu: "סגירת תפריט",
+  },
+  hero: {
+    badge: "הפלטפורמה לאירועים של ארגונים וקהילות",
+    titleStart: "החוויה הבאה של הצוות שלכם",
+    titleHighlight: "מתחילה כאן",
+    subtitle:
+      "ימי גיבוש, סדנאות ואירועי קהילה — עם הרשמה בלי חיכוך, אישורי הגעה בלחיצה אחת, כרטיס QR דיגיטלי ותזכורות שנשלחות לבד.",
+    primaryCta: "פתחו סביבת עבודה לארגון",
+    secondaryCta: "גלו אירועים",
+    highlights: ["אימות OTP במייל", "תזכורות אוטומטיות", "מחולל אירועים ב-AI"],
+  },
+  bento: {
+    eyebrow: "הכול במקום אחד",
+    title: "מהרעיון ועד הצ׳ק-אין בכניסה",
+    subtitle: "קטגוריות, חבילות גיבוש וסדנאות קרובות — לכל ארגון סביבה ממותגת משלו.",
+    categories: {
+      title: "קטגוריות אירועים",
+      body: "בחרו את סוג החוויה — וקבלו טופס הרשמה מותאם, מגבלת משתתפים וסליקה מובנית.",
+      activeEvents: (n: number) => `${n} אירועים פעילים`,
+      items: {
+        team: "ימי גיבוש",
+        workshops: "סדנאות",
+        community: "אירועי קהילה",
+        conferences: "כנסים",
+        volunteering: "התנדבות",
+        outdoor: "פעילויות שטח",
+      },
+    },
+    ai: {
+      title: "מחולל אירועים חכם",
+      body: "כתבו משפט אחד — וקבלו טיוטה מלאה: כותרת, לו״ז, תמחור וטופס הרשמה.",
+      prompt: "יום גיבוש ל-40 עובדים בצפון עם ארוחה כשרה",
+    },
+    rsvp: {
+      title: "אישור הגעה בלחיצה + כרטיס QR",
+      body: "בלי סיסמאות. סריקה בכניסה מהנייד ותזכורות 24 ושעתיים לפני.",
+      stats: [
+        { value: "12K+", label: "משתתפים נרשמו" },
+        { value: "98%", label: "אישורי הגעה" },
+        { value: "2 דק׳", label: "להקמת אירוע" },
+      ],
+    },
+    packages: {
+      prefix: "חבילת",
+      popular: "הכי פופולרי",
+      items: [
+        { name: "בסיסי", people: "עד 30 משתתפים", price: "₪89", perks: ["הרשמה + OTP", "תזכורות במייל"] },
+        {
+          name: "צוות",
+          people: "עד 120 משתתפים",
+          price: "₪149",
+          perks: ["טפסים דינמיים", "כרטיסי QR", "וואטסאפ"],
+          featured: true,
+        },
+        { name: "ארגון", people: "ללא הגבלה", price: "בהתאמה", perks: ["מיתוג מלא", "AI Generator", "סליקה"] },
+      ] as { name: string; people: string; price: string; perks: string[]; featured?: boolean }[],
+    },
+    workshops: {
+      title: "סדנאות קרובות — בשידור חי",
+      all: "לכל הסדנאות",
+      items: [
+        { title: "סדנת בישול צוותית", date: "יום ג׳, 24.11", time: "18:00", seatsLeft: 6, price: 180 },
+        { title: "ניווט לילה ביער בן שמן", date: "יום ה׳, 26.11", time: "19:30", seatsLeft: 14, price: 120 },
+        { title: "סדנת אלתור ותקשורת", date: "יום א׳, 29.11", time: "10:00", seatsLeft: 3, price: 0 },
+      ],
+    },
+    ideas: {
+      title: "קיר הרעיונות",
+      body: "העובדים מציעים, מצביעים — והאירוע הבא כבר נבחר.",
+      items: [
+        { title: "טיול זריחה במצדה", votes: 87 },
+        { title: "האקתון חברתי", votes: 54 },
+      ],
+    },
+  },
+  tenant: {
+    upcoming: "אירועים קרובים",
+    upcomingSub: (n: number) => `${n} אירועים פתוחים להרשמה`,
+    register: "להרשמה",
+    registrationSoon: "ההרשמה תיפתח בקרוב",
+    capacity: (taken: number, max: number) => `${taken} מתוך ${max} נרשמו`,
+    empty: "אין כרגע אירועים פתוחים. חזרו בקרוב!",
+    demoNotice: "סביבת הדגמה — הנתונים להמחשה בלבד",
+    categories: {
+      team: "יום גיבוש",
+      workshops: "סדנה",
+      community: "קהילה",
+      conferences: "כנס",
+      volunteering: "התנדבות",
+      outdoor: "שטח",
+    } as Record<string, string>,
+  },
+  notFound: {
+    title: "הדף לא נמצא",
+    body: "ייתכן שהקישור שגוי או שסביבת הארגון אינה קיימת.",
+  },
+};
+
+export type Dictionary = typeof he;

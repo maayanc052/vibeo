@@ -1,18 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowLeft } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { VibeoLogo } from "@/components/brand/VibeoLogo";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { ForwardArrow } from "@/components/i18n/ForwardArrow";
+import { localizedPath, type Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries/he";
 
-const links = [
-  { href: "#events", label: "אירועים" },
-  { href: "#team-building", label: "גיבוש צוות" },
-  { href: "#workshops", label: "סדנאות" },
-  { href: "#ideas", label: "רעיונות" },
-];
+type Props = {
+  lang: Locale;
+  t: Dictionary["nav"];
+  switchLabel: string;
+};
 
-export function FloatingNav() {
+export function FloatingNav({ lang, t, switchLabel }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -23,12 +27,12 @@ export function FloatingNav() {
       className="fixed inset-x-0 top-4 z-50 px-4"
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow-[0_8px_40px_-12px_rgb(0_0_0/0.6)] backdrop-blur-xl">
-        <a href="#" aria-label="Vibeo — עמוד הבית">
+        <Link href={localizedPath(lang, "/")} aria-label={t.home}>
           <VibeoLogo size={34} />
-        </a>
+        </Link>
 
         <ul className="hidden items-center gap-1 md:flex">
-          {links.map((l) => (
+          {t.links.map((l) => (
             <li key={l.href}>
               <a
                 href={l.href}
@@ -40,25 +44,26 @@ export function FloatingNav() {
           ))}
         </ul>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          <LanguageSwitcher lang={lang} label={switchLabel} />
           <a
             href="#login"
-            className="hidden rounded-xl px-4 py-2 text-sm text-white/80 transition hover:text-white sm:inline-block"
+            className="hidden rounded-xl px-3 py-2 text-sm text-white/80 transition hover:text-white sm:inline-block"
           >
-            כניסה
+            {t.login}
           </a>
           <a
             href="#start"
             className="group inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-l from-violet-500 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:brightness-110"
           >
-            התחילו עכשיו
-            <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
+            {t.cta}
+            <ForwardArrow className="size-4 transition-transform rtl:group-hover:-translate-x-0.5 ltr:group-hover:translate-x-0.5" />
           </a>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             className="rounded-xl p-2 text-white/80 hover:bg-white/10 md:hidden"
-            aria-label={open ? "סגירת תפריט" : "פתיחת תפריט"}
+            aria-label={open ? t.closeMenu : t.openMenu}
             aria-expanded={open}
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -74,7 +79,7 @@ export function FloatingNav() {
             exit={{ opacity: 0, y: -8 }}
             className="mx-auto mt-2 max-w-6xl rounded-2xl border border-white/10 bg-black/60 p-2 backdrop-blur-xl md:hidden"
           >
-            {links.map((l) => (
+            {t.links.map((l) => (
               <li key={l.href}>
                 <a
                   href={l.href}
