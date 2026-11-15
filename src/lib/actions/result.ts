@@ -12,6 +12,9 @@ export type ActionErrorCode =
   | "validation"
   | "already_registered"
   | "event_full"
+  | "invalid_code"
+  | "rate_limited"
+  | "email_failed"
   | "unknown";
 
 export const ok = <T>(data: T): ActionResult<T> => ({ ok: true, data });

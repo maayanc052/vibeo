@@ -138,3 +138,26 @@ export function toEventView(row: EventRow, lang: Locale): EventView {
     coverImageUrl: row.cover_image_url,
   };
 }
+
+// ---------- אירוע בודד (לעמוד האירוע וההרשמה) ----------
+
+export const eventTag = (eventId: string) => `event:${eventId}`;
+
+export async function getEventById(eventId: string): Promise<EventRow | null> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(eventTag(eventId));
+
+  // מזהה לא תקין (לא UUID) — אין טעם לפנות למסד
+  if (!/^[0-9a-f-]{36}$/i.test(eventId)) return null;
+
+  const { data, error } = await createPublicClient()
+    .from("events")
+    .select("*")
+    .eq("id", eventId)
+    .eq("is_active", true)
+    .maybeSingle();
+  if (error) throw new Error(`שגיאה בטעינת האירוע: ${error.message}`);
+  if (data) cacheTag(orgEventsTag(data.organization_id));
+  return data;
+}

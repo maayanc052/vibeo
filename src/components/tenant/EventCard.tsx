@@ -10,7 +10,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { ForwardArrow } from "@/components/i18n/ForwardArrow";
-import { localeTag, type Locale } from "@/i18n/config";
+import Link from "next/link";
+import { localeTag, localizedPath, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/he";
 import type { EventCategory, EventView } from "@/lib/data/organizations";
 
@@ -25,11 +26,12 @@ const categoryIcon: Record<EventCategory, LucideIcon> = {
 
 type Props = {
   event: EventView;
+  orgSlug: string;
   lang: Locale;
   t: Dictionary;
 };
 
-export function EventCard({ event, lang, t }: Props) {
+export function EventCard({ event, orgSlug, lang, t }: Props) {
   const Icon = categoryIcon[event.category];
   const seatsLeft = Math.max(event.maxCapacity - event.seatsTaken, 0);
   const fill = Math.min(100, Math.round((event.seatsTaken / event.maxCapacity) * 100));
@@ -104,16 +106,20 @@ export function EventCard({ event, lang, t }: Props) {
           <span className="text-lg font-black">
             {event.price === 0 ? t.common.free : `${t.common.currency}${event.price}`}
           </span>
-          <button
-            type="button"
-            disabled={soldOut}
-            title={t.tenant.registrationSoon}
-            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold text-white transition enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
-            style={{ background: "linear-gradient(90deg, var(--brand), var(--brand-2))" }}
-          >
-            {soldOut ? t.common.soldOut : t.tenant.register}
-            {!soldOut && <ForwardArrow />}
-          </button>
+          {soldOut ? (
+            <span className="rounded-xl border border-white/15 px-4 py-2 text-sm font-semibold text-white/50">
+              {t.common.soldOut}
+            </span>
+          ) : (
+            <Link
+              href={localizedPath(lang, `/${orgSlug}/events/${event.id}`)}
+              className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
+              style={{ background: "linear-gradient(90deg, var(--brand), var(--brand-2))" }}
+            >
+              {t.tenant.register}
+              <ForwardArrow />
+            </Link>
+          )}
         </div>
       </div>
     </article>
