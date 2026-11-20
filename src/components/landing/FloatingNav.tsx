@@ -46,12 +46,12 @@ export function FloatingNav({ lang, t, switchLabel }: Props) {
 
         <div className="flex items-center gap-1.5">
           <LanguageSwitcher lang={lang} label={switchLabel} />
-          <a
-            href="#login"
+          <Link
+            href={localizedPath(lang, "/login")}
             className="hidden rounded-xl px-3 py-2 text-sm text-white/80 transition hover:text-white sm:inline-block"
           >
             {t.login}
-          </a>
+          </Link>
           <a
             href="#start"
             className="group inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-l from-violet-500 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:brightness-110"
